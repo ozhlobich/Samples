@@ -4,12 +4,16 @@ namespace Player.Scripts
 {
     public class CharacterController2D : MonoBehaviour
     {
+        //Скорость
         public float speed = 14f;
+        //Ускорение
         public float accel = 6f;
+        //Вектор полученного направления 
         private Vector2 _input;
         private Rigidbody2D _rb;
         private SpriteRenderer[] _spriteRenderers;
     
+        //Вызывается Unity как только Unity создала наш объект, но еще не разместила в графическом мире
         void Awake() 
         {
             _rb = GetComponent<Rigidbody2D>();
@@ -18,9 +22,10 @@ namespace Player.Scripts
 
         void Update()
         {
+            //Читаем в наш вектор запись по горизонтали
             _input.x = Input.GetAxis("Horizontal");
-            _input.y = Input.GetAxis("Jump");
             
+            //Что делает данный код ? 
             foreach (var sr in _spriteRenderers)
             {
                 if (_input.x > 0f)
@@ -31,11 +36,8 @@ namespace Player.Scripts
         
         void FixedUpdate() 
         {
-            var acceleration = accel;
-            var xVelocity = _input.x == 0 ? 0f : _rb.velocity.x;
-
-            _rb.AddForce(new Vector2(((_input.x * speed) - _rb.velocity.x) * acceleration, 0));
-            _rb.velocity = new Vector2(xVelocity, _rb.velocity.y);
+            //"Толкаем" нашего персонажа, рассчитываем силу толчка 
+            _rb.AddForce(new Vector2((_input.x * speed - _rb.velocity.x) * accel, 0));
         }
     }
 }
